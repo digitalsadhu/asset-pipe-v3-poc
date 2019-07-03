@@ -15,13 +15,13 @@ Create a file called assets.json in the root of your project.
     "name": "my-app",
     "version": "1.0.0",
     "server": "http://assets-server",
-    "input": {
+    "inputs": {
         "js": "./assets/scripts.js",
         "css": "./assets/styles.css"
     },
-    "targets": {
-        "chrome": "58",
-        "ie": "11"
+    "outputs": {
+        "js": "scripts.js",
+        "css": "styles.css"
     }
 }
 ```
