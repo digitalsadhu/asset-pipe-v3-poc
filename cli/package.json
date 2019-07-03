@@ -1,0 +1,17 @@
+{
+    "name": "asset-pipe-v3-poc",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "form-data": "^2.4.0",
+        "make-dir": "^3.0.0",
+        "tar": "^4.4.10"
+    }
+}
