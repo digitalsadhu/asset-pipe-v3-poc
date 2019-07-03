@@ -7,7 +7,7 @@ A convention based approach using info described in an `assets.json` file
     "name": "my-app",
     "version": "1.0.0",
     "server": "http://assets-server",
-    "input": {
+    "inputs": {
         "js": "./assets/scripts.js",
         "css": "./assets/styles.css"
     },
