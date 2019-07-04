@@ -48,7 +48,7 @@ main URL at `http://localhost:3000` you should see that the background has been 
 ## Publish to the asset server
 
 Start up the asset server `cd server && node .` and go into the app folder and run the cli to upload the podlet's
-assets to the server `cd app && node ../cli` (this needs to be run from the app's dir).
+assets to the server `cd app && ../cli publish` (this needs to be run from the app's dir).
 
 Restart the app and you should now see additional values in the manifest file.
 
