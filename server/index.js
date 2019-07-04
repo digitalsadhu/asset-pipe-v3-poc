@@ -2,7 +2,7 @@
 
 const express = require('express');
 const cors = require('cors');
-const { readFile, stat } = require('fs').promises;
+const { readFile, stat, unlink } = require('fs').promises;
 const multer = require('multer');
 const tar = require('tar');
 const { join } = require('path');
@@ -27,6 +27,15 @@ async function versionExists(organisation, name, version) {
     }
 }
 
+async function extract({ src, dest }) {
+    await mkdir(dest);
+    await tar.extract({ file: src, C: dest });
+}
+
+async function unlinkFiles(...paths) {
+    return Promise.all(paths.map(path => unlink(path)));
+}
+
 // receive archive of js
 app.post(
     '/upload',
@@ -37,19 +46,24 @@ app.post(
     ]),
     async (req, res) => {
         try {
-            const { organisation, name, version, outputs } = JSON.parse(
-                await readFile(req.files.meta[0].path)
-            );
-
-            if (await versionExists(organisation, name, version))
-                throw new Error('VERSION EXISTS');
-            if (!semver.valid(version)) throw new Error('INVALID SEMVER VALUE');
-
-            const port = PORT !== 80 ? `:${PORT}` : '';
-            // const host = `${HOST}${port}`;
-
+            const metaPath = join(__dirname, req.files.meta[0].path);
             const jsArchive = req.files.js[0].path;
             const cssArchive = req.files.css[0].path;
+            const jsArchivePath = join(__dirname, jsArchive);
+            const cssArchivePath = join(__dirname, cssArchive);
+
+            const { organisation, name, version } = JSON.parse(
+                await readFile(metaPath)
+            );
+
+            if (await versionExists(organisation, name, version)) {
+                await unlinkFiles(metaPath, jsArchivePath, cssArchivePath);
+                throw new Error('VERSION EXISTS');
+            }
+            if (!semver.valid(version)) {
+                await unlinkFiles(metaPath, jsArchivePath, cssArchivePath);
+                throw new Error('INVALID SEMVER VALUE');
+            }
 
             const jsPath = join(
                 __dirname,
@@ -67,43 +81,12 @@ app.post(
                 version,
                 'css/src'
             );
-            await mkdir(jsPath);
-            await mkdir(cssPath);
 
-            await tar.extract({ file: join(__dirname, jsArchive), C: jsPath });
-            await tar.extract({
-                file: join(__dirname, cssArchive),
-                C: cssPath,
-            });
-            res.send({
-                success: true,
-                // js: [
-                //     {
-                //         value: `${host}/${organisation}/${name}/${version}/js/src/${
-                //             outputs.js
-                //         }`,
-                //         type: 'module',
-                //     },
-                //     {
-                //         value: `${host}/${organisation}/${name}/${version}/js/bundle/${
-                //             outputs.js
-                //         }`,
-                //         type: 'iife',
-                //     },
-                // ],
-                // css: [
-                //     {
-                //         value: `${host}/${organisation}/${name}/${version}/css/src/${
-                //             outputs.css
-                //         }`,
-                //     },
-                //     {
-                //         value: `${host}/${organisation}/${name}/${version}/css/bundle/${
-                //             outputs.css
-                //         }`,
-                //     },
-                // ],
-            });
+            await extract({ src: jsArchivePath, dest: jsPath });
+            await extract({ src: cssArchivePath, dest: cssPath });
+            await unlinkFiles(metaPath, jsArchivePath, cssArchivePath);
+
+            res.send({ success: true });
         } catch (err) {
             console.error(err);
             res.status(500).send({

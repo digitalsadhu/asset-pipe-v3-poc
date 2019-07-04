@@ -1,14 +1,14 @@
 {
-    "organisation": "finn-no",
-    "name": "my-app",
-    "version": "1.0.6",
-    "server": "http://localhost:4001",
-    "inputs": {
-        "js": "./assets/scripts.js",
-        "css": "./assets/styles.css"
-    },
-    "outputs": {
-        "js": "scripts.js",
-        "css": "styles.css"
-    }
+  "organisation": "finn-no",
+  "name": "my-app",
+  "version": "1.0.16",
+  "server": "http://localhost:4001",
+  "inputs": {
+    "js": "./assets/scripts.js",
+    "css": "./assets/styles.css"
+  },
+  "outputs": {
+    "js": "scripts.js",
+    "css": "styles.css"
+  }
 }
