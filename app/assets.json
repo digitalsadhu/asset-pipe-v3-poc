@@ -1,7 +1,8 @@
 {
+    "organisation": "finn-no",
     "name": "my-app",
-    "version": "1.0.0",
-    "server": "http://assets-server",
+    "version": "1.0.6",
+    "server": "http://localhost:4001",
     "inputs": {
         "js": "./assets/scripts.js",
         "css": "./assets/styles.css"

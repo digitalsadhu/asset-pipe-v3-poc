@@ -3,8 +3,8 @@
 // import { tools, stuff } from './dep';
 
 function main() {
-    tools();
-    stuff();
+    // tools();
+    // stuff();
 
     fetch(document.getElementById('app').dataset.apiUrl + '/api')
         .then(result => {

@@ -30,15 +30,12 @@ function assetPaths(pathname) {
     return { dir, file };
 }
 
-async function main(
-    url,
-    name = 'test',
-    js = './assets/scripts.js',
-    css = './assets/styles.css'
-) {
+async function main() {
+    const meta = JSON.parse(fs.readFileSync(process.cwd() + '/assets.json'));
+
     // produce archive of js
-    const jsAssetPaths = assetPaths(js);
-    const cssAssetPaths = assetPaths(css);
+    const jsAssetPaths = assetPaths(meta.inputs.js);
+    const cssAssetPaths = assetPaths(meta.inputs.css);
 
     await mkdir(__dirname + '/tmp');
 
@@ -63,20 +60,17 @@ async function main(
 
     // POST request to url with archives
     const form = new FormData();
+    form.append('meta', fs.createReadStream(process.cwd() + '/assets.json'));
     form.append('js', fs.createReadStream(__dirname + '/tmp/archive-js.tgz'));
     form.append('css', fs.createReadStream(__dirname + '/tmp/archive-css.tgz'));
-    form.submit(`http://localhost:4001/upload/${name}`, (err, res) => {
+    form.submit(`http://localhost:4001/upload`, (err, res) => {
         if (err) {
             console.error(err);
             return;
         }
+
         res.on('data', chunk => {
-            const responseJSON = JSON.parse(chunk.toString());
-            fs.writeFileSync(
-                path.join(process.cwd(), '.asset-pipe.json'),
-                JSON.stringify(responseJSON, null, 2)
-            );
-            console.log();
+            console.log(chunk.toString());
         });
     });
 
