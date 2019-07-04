@@ -93,6 +93,41 @@ async function main(commands, metaPath = './assets.json') {
             `Version ${meta.version} set. Run "asset-pipe publish" to publish`
         );
     }
+
+    if (commands[0] === 'init') {
+        const pathToMeta = resolvePath(metaPath).pathname;
+
+        try {
+            const st = fs.statSync(pathToMeta);
+            if (st.isFile()) {
+                console.log('assets meta file already exists');
+                return;
+            }
+        } catch (err) {}
+
+        fs.writeFileSync(
+            pathToMeta,
+            JSON.stringify(
+                {
+                    organisation: '[required]',
+                    name: '[required]',
+                    version: '1.0.0',
+                    server: 'http://assets-server.svc.prod.finn.no',
+                    inputs: {
+                        js: '[path to js entrypoint]',
+                        css: '[path to css entrypoint]',
+                    },
+                    outputs: {
+                        js: '[output js filename]',
+                        css: '[output css filename]',
+                    },
+                },
+                null,
+                2
+            )
+        );
+        console.log(`assets.json file created`);
+    }
 }
 
 module.exports = {
