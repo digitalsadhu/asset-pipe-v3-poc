@@ -2,7 +2,7 @@
 
 ## install
 
-## 1. Setup of development
+## 1. Setup for development
 
 ### Install
 
